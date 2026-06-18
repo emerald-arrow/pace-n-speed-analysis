@@ -18,7 +18,8 @@ public final class SpeedRow extends Row {
                 builder.team,
                 builder.manufacturer,
                 builder.flagAtFinishLine,
-                builder.elapsed
+                builder.elapsed,
+                builder.id
         );
 
         this.topSpeed = builder.topSpeed;

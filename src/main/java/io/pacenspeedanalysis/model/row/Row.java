@@ -4,6 +4,7 @@ import io.pacenspeedanalysis.model.EFlag;
 
 import java.time.Duration;
 import java.util.Objects;
+import java.util.UUID;
 
 public abstract class Row {
 
@@ -16,9 +17,10 @@ public abstract class Row {
     protected final String manufacturer;
     protected final EFlag flagAtFinishLine;
     protected final Duration elapsed;
+    protected final UUID id;
 
     public Row(String carNumber, short lapNumber, boolean wentThroughPitLane, String driver, String category,
-               String team, String manufacturer, EFlag flagAtFinishLine, Duration elapsed) {
+               String team, String manufacturer, EFlag flagAtFinishLine, Duration elapsed, UUID id) {
         this.carNumber = carNumber;
         this.lapNumber = lapNumber;
         this.wentThroughPitLane = wentThroughPitLane;
@@ -28,6 +30,7 @@ public abstract class Row {
         this.manufacturer = manufacturer;
         this.flagAtFinishLine = flagAtFinishLine;
         this.elapsed = elapsed;
+        this.id = id;
     }
 
     public String getCarNumber() {
@@ -70,6 +73,10 @@ public abstract class Row {
         return elapsed;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Row that)) return false;
@@ -81,7 +88,8 @@ public abstract class Row {
                 Objects.equals(team, that.getTeam()) &&
                 Objects.equals(manufacturer, that.getManufacturer()) &&
                 flagAtFinishLine == that.getFlagAtFinishLine() &&
-                Objects.equals(elapsed, that.getElapsed());
+                Objects.equals(elapsed, that.getElapsed()) &&
+                Objects.equals(id, this.getId());
     }
 
     @Override
@@ -95,7 +103,8 @@ public abstract class Row {
                 team,
                 manufacturer,
                 flagAtFinishLine,
-                elapsed
+                elapsed,
+                id
         );
     }
 }

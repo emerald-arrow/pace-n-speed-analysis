@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public final class SpeedReader extends CsvReader<SpeedRow> {
@@ -69,6 +66,7 @@ public final class SpeedReader extends CsvReader<SpeedRow> {
                 final String flagAtFinish = line[flagAtFinishPos];
                 final String elapsed = line[elapsedPos];
                 final String topSpeed = line[topSpeedPos];
+                final UUID id = getLineUUID(line);
 
                 speedData.add(
                         new SpeedRow.Builder().withCarNumber(carNumber)
@@ -80,6 +78,7 @@ public final class SpeedReader extends CsvReader<SpeedRow> {
                                                 .withManufacturer(manufacturer)
                                                 .withFlagAtFinishLine(flagAtFinish)
                                                 .withElapsed(elapsed)
+                                                .withId(id)
                                                 .withTopSpeed(topSpeed)
                                                 .build()
                 );

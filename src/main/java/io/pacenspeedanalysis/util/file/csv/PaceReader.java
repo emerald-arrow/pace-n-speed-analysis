@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public final class PaceReader extends CsvReader<PaceRow> {
@@ -78,6 +75,7 @@ public final class PaceReader extends CsvReader<PaceRow> {
                 final String sectorOne = line[sectorOnePos];
                 final String sectorTwo = line[sectorTwoPos];
                 final String sectorThree = line[sectorThreePos];
+                final UUID id = getLineUUID(line);
 
                 paceData.add(
                         new PaceRow.Builder().withCarNumber(carNumber)
@@ -89,6 +87,7 @@ public final class PaceReader extends CsvReader<PaceRow> {
                                                 .withManufacturer(manufacturer)
                                                 .withFlagAtFinishLine(flagAtFinish)
                                                 .withElapsed(elapsed)
+                                                .withId(id)
                                                 .withLapTime(lapTime)
                                                 .withSector1(sectorOne)
                                                 .withSector2(sectorTwo)
