@@ -1,15 +1,11 @@
 package io.pacenspeedanalysis.feature.filter;
 
-import io.pacenspeedanalysis.model.analysis.LapKey;
 import io.pacenspeedanalysis.model.data.DataRecord;
 import io.pacenspeedanalysis.model.lap.Lap;
 import io.pacenspeedanalysis.model.lap.SpeedLap;
 import io.pacenspeedanalysis.util.numeric.BigDecimalUtils;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class BestSpeedLapsFilter extends BestLapsFilter {
 
@@ -18,25 +14,23 @@ public final class BestSpeedLapsFilter extends BestLapsFilter {
     }
 
     @Override
-    public FilteringResult apply(List<DataRecord> records, Set<LapKey> hiddenLaps) {
-        final Set<LapKey> lapsToHide = new HashSet<>();
+    public FilteringResult apply(List<DataRecord> records, Set<UUID> hiddenLaps) {
+        final Set<UUID> lapsToHide = new HashSet<>();
 
         int newlyHidden = 0;
         int alreadyHidden = 0;
 
         for (DataRecord record : records) {
-            final String name = record.name();
-
             if (threshold > record.laps().size()) {
                 for (Lap lap : record.laps()) {
-                    final LapKey lapToHide = new LapKey(name, lap.getLapNumber());
-                    final boolean hidden = hiddenLaps.contains(lapToHide);
+                    final UUID id = lap.getId();
+                    final boolean hidden = hiddenLaps.contains(id);
 
                     if (hidden) {
                         alreadyHidden++;
                     } else {
                         newlyHidden++;
-                        lapsToHide.add(lapToHide);
+                        lapsToHide.add(id);
                     }
                 }
                 continue;
@@ -53,14 +47,14 @@ public final class BestSpeedLapsFilter extends BestLapsFilter {
                                                                 .reversed();
 
             for (int i = threshold; i < laps.size(); i++) {
-                final LapKey lapToHide = new LapKey(name, laps.get(i).getLapNumber());
-                final boolean hidden = hiddenLaps.contains(lapToHide);
+                final UUID id = laps.get(i).getId();
+                final boolean hidden = hiddenLaps.contains(id);
 
                 if (hidden) {
                     alreadyHidden++;
                 } else {
                     newlyHidden++;
-                    lapsToHide.add(lapToHide);
+                    lapsToHide.add(id);
                 }
             }
         }

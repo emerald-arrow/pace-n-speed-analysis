@@ -28,7 +28,7 @@ public final class FilterFirstLapTab extends FilterTab {
         });
 
         filterButton.addClickListener(_ -> {
-            final FirstLapFilter filter = new FirstLapFilter(state.getAggregationType());
+            final FirstLapFilter filter = new FirstLapFilter();
             final FilteringResult result = filter.apply(state.getData(), state.getAllHiddenLaps());
 
             notifyFilteringResult(result);

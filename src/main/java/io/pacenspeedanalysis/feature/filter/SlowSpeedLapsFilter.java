@@ -1,17 +1,13 @@
 package io.pacenspeedanalysis.feature.filter;
 
 import io.pacenspeedanalysis.model.analysis.AnalysisContext;
-import io.pacenspeedanalysis.model.analysis.LapKey;
 import io.pacenspeedanalysis.model.data.DataRecord;
 import io.pacenspeedanalysis.model.lap.Lap;
 import io.pacenspeedanalysis.model.lap.SpeedLap;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class SlowSpeedLapsFilter extends LapsFilter {
 
@@ -32,12 +28,12 @@ public final class SlowSpeedLapsFilter extends LapsFilter {
     }
 
     @Override
-    public FilteringResult apply(List<DataRecord> records, Set<LapKey> hiddenLaps) {
+    public FilteringResult apply(List<DataRecord> records, Set<UUID> hiddenLaps) {
         final BigDecimal filter = BigDecimal.valueOf(BASE_THRESHOLD)
                                             .subtract(BigDecimal.valueOf(threshold))
                                             .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
 
-        final Set<LapKey> lapsToHide = new HashSet<>();
+        final Set<UUID> lapsToHide = new HashSet<>();
 
         int newlyHidden = 0;
         int alreadyHidden = 0;
@@ -49,14 +45,14 @@ public final class SlowSpeedLapsFilter extends LapsFilter {
                 final SpeedLap speedLap = (SpeedLap) lap;
 
                 if (speedLap.getTopSpeed().compareTo(maxSpeed.multiply(filter)) < 0) {
-                    final LapKey lapKey = new LapKey(record.name(), lap.getLapNumber());
-                    final boolean hidden = hiddenLaps.contains(lapKey);
+                    final UUID id = lap.getId();
+                    final boolean hidden = hiddenLaps.contains(id);
 
                     if (hidden) {
                         alreadyHidden++;
                     } else {
                         newlyHidden++;
-                        lapsToHide.add(lapKey);
+                        lapsToHide.add(id);
                     }
                 }
             }

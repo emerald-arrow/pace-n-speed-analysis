@@ -8,7 +8,7 @@ public abstract class BestLapsFilter extends LapsFilter {
 
     public BestLapsFilter(int threshold) {
         if (threshold < MIN_THRESHOLD) {
-            throw new IllegalArgumentException("Threshold must be greater than " + (MIN_THRESHOLD - 1));
+            throw new IllegalArgumentException("threshold must be greater or equal to " + (MIN_THRESHOLD));
         }
 
         this.threshold = threshold;

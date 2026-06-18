@@ -1,14 +1,10 @@
 package io.pacenspeedanalysis.feature.filter;
 
-import io.pacenspeedanalysis.model.analysis.LapKey;
 import io.pacenspeedanalysis.model.data.DataRecord;
 import io.pacenspeedanalysis.model.lap.SpeedLap;
 import io.pacenspeedanalysis.util.numeric.BigDecimalUtils;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class BestSpeedLapsPercentageFilter extends BestLapsPercentageFilter {
 
@@ -17,14 +13,13 @@ public final class BestSpeedLapsPercentageFilter extends BestLapsPercentageFilte
     }
 
     @Override
-    public FilteringResult apply(List<DataRecord> records, Set<LapKey> hiddenLaps) {
-        final Set<LapKey> lapsToHide = new HashSet<>();
+    public FilteringResult apply(List<DataRecord> records, Set<UUID> hiddenLaps) {
+        final Set<UUID> lapsToHide = new HashSet<>();
 
         int newlyHidden = 0;
         int alreadyHidden = 0;
 
         for (DataRecord record : records) {
-            final String name = record.name();
             final List<SpeedLap> laps = record.laps().stream().map(l -> (SpeedLap) l)
                                                                 .sorted((a, b) ->
                                                                         BigDecimalUtils.compare(
@@ -38,14 +33,14 @@ public final class BestSpeedLapsPercentageFilter extends BestLapsPercentageFilte
             final short individualThreshold = calculateIndividualThreshold(laps.size());
 
             for (short i = individualThreshold; i < laps.size(); i++) {
-                final LapKey lapToHide = new LapKey(name, laps.get(i).getLapNumber());
-                final boolean hidden = hiddenLaps.contains(lapToHide);
+                final UUID id = laps.get(i).getId();
+                final boolean hidden = hiddenLaps.contains(id);
 
                 if (hidden) {
                     alreadyHidden++;
                 } else {
                     newlyHidden++;
-                    lapsToHide.add(lapToHide);
+                    lapsToHide.add(id);
                 }
             }
         }

@@ -1,6 +1,5 @@
 package io.pacenspeedanalysis.feature.filter;
 
-import io.pacenspeedanalysis.model.analysis.LapKey;
 import io.pacenspeedanalysis.model.data.DataRecord;
 import io.pacenspeedanalysis.model.lap.Lap;
 import io.pacenspeedanalysis.util.duration.DurationUtils;
@@ -19,8 +18,8 @@ public final class LapsInsidePeriodFilter extends LapsFilter {
     }
 
     @Override
-    public FilteringResult apply(List<DataRecord> records, Set<LapKey> hiddenLaps) {
-        final Set<LapKey> lapsToHide = new HashSet<>();
+    public FilteringResult apply(List<DataRecord> records, Set<UUID> hiddenLaps) {
+        final Set<UUID> lapsToHide = new HashSet<>();
 
         int newlyHidden = 0;
         int alreadyHidden = 0;
@@ -43,14 +42,14 @@ public final class LapsInsidePeriodFilter extends LapsFilter {
                 );
 
                 if (duringPeriod) {
-                    final LapKey currentLapKey = new LapKey(record.name(), currentLap.getLapNumber());
-                    final boolean currentLapHidden = hiddenLaps.contains(currentLapKey);
+                    final UUID currentId = currentLap.getId();
+                    final boolean currentLapHidden = hiddenLaps.contains(currentId);
 
                     if (currentLapHidden) {
                         alreadyHidden++;
                     } else {
                         newlyHidden++;
-                        lapsToHide.add(currentLapKey);
+                        lapsToHide.add(currentId);
                     }
                     continue;
                 }
@@ -71,14 +70,14 @@ public final class LapsInsidePeriodFilter extends LapsFilter {
                     );
 
                     if (affectedByPeriod) {
-                        final LapKey previousLapKey = new LapKey(record.name(), previousLap.getLapNumber());
-                        final boolean previousLapHidden = hiddenLaps.contains(previousLapKey);
+                        final UUID previousId = previousLap.getId();
+                        final boolean previousLapHidden = hiddenLaps.contains(previousId);
 
                         if (previousLapHidden) {
                             alreadyHidden++;
                         } else {
                             newlyHidden++;
-                            lapsToHide.add(previousLapKey);
+                            lapsToHide.add(previousId);
                         }
                     }
 

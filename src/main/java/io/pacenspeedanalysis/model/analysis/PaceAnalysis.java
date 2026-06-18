@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.List;
+import java.util.UUID;
 
 public record PaceAnalysis(
         String name,
@@ -19,9 +20,9 @@ public record PaceAnalysis(
         Duration variance,
         Duration standardDeviation
 ) implements Analysis<Duration> {
-    public PaceAnalysis(PaceDataRecord record, List<Short> hiddenLaps) {
+    public PaceAnalysis(PaceDataRecord record, List<UUID> hiddenLaps) {
         final List<Duration> validLaps = record.laps().stream()
-                                                        .filter(l -> !hiddenLaps.contains(l.getLapNumber()))
+                                                        .filter(l -> !hiddenLaps.contains(l.getId()))
                                                         .map(PaceLap::getLapTime)
                                                         .toList();
 

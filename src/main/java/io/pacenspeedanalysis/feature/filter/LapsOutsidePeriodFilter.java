@@ -1,6 +1,5 @@
 package io.pacenspeedanalysis.feature.filter;
 
-import io.pacenspeedanalysis.model.analysis.LapKey;
 import io.pacenspeedanalysis.model.data.DataRecord;
 import io.pacenspeedanalysis.model.lap.Lap;
 import io.pacenspeedanalysis.util.duration.DurationUtils;
@@ -19,8 +18,8 @@ public final class LapsOutsidePeriodFilter extends LapsFilter {
     }
 
     @Override
-    public FilteringResult apply(List<DataRecord> records, Set<LapKey> hiddenLaps) {
-        final Set<LapKey> lapsToHide = new HashSet<>();
+    public FilteringResult apply(List<DataRecord> records, Set<UUID> hiddenLaps) {
+        final Set<UUID> lapsToHide = new HashSet<>();
 
         int newlyHidden = 0;
         int alreadyHidden = 0;
@@ -30,22 +29,22 @@ public final class LapsOutsidePeriodFilter extends LapsFilter {
                                                             .sorted(Comparator.comparing(Lap::getElapsed))
                                                             .toList();
 
-            for (final Lap currentLap : laps) {
+            for (final Lap lap : laps) {
                 final boolean duringPeriod = DurationUtils.isBetweenDurations(
                         periodStart,
                         periodEnd,
-                        currentLap.getElapsed()
+                        lap.getElapsed()
                 );
 
                 if (!duringPeriod) {
-                    final LapKey currentLapKey = new LapKey(record.name(), currentLap.getLapNumber());
-                    final boolean currentLapHidden = hiddenLaps.contains(currentLapKey);
+                    final UUID id = lap.getId();
+                    final boolean hidden = hiddenLaps.contains(id);
 
-                    if (currentLapHidden) {
+                    if (hidden) {
                         alreadyHidden++;
                     } else {
                         newlyHidden++;
-                        lapsToHide.add(currentLapKey);
+                        lapsToHide.add(id);
                     }
                 }
             }

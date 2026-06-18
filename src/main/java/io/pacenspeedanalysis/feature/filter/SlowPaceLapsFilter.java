@@ -2,17 +2,13 @@ package io.pacenspeedanalysis.feature.filter;
 
 import io.pacenspeedanalysis.model.analysis.AnalysisContext;
 import io.pacenspeedanalysis.model.analysis.BestSectors;
-import io.pacenspeedanalysis.model.analysis.LapKey;
 import io.pacenspeedanalysis.model.data.DataRecord;
 import io.pacenspeedanalysis.model.lap.Lap;
 import io.pacenspeedanalysis.model.lap.PaceLap;
 import io.pacenspeedanalysis.util.duration.DurationUtils;
 
 import java.time.Duration;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class SlowPaceLapsFilter extends LapsFilter {
 
@@ -35,7 +31,7 @@ public final class SlowPaceLapsFilter extends LapsFilter {
     }
 
     @Override
-    public FilteringResult apply(List<DataRecord> records, Set<LapKey> hiddenLaps) {
+    public FilteringResult apply(List<DataRecord> records, Set<UUID> hiddenLaps) {
         final short limit = (short) (BASE_THRESHOLD + threshold);
 
         if (filterOutSectors) {
@@ -45,8 +41,8 @@ public final class SlowPaceLapsFilter extends LapsFilter {
         }
     }
 
-    private FilteringResult filterLaps(List<DataRecord> records, Set<LapKey> hiddenLaps, short filter) {
-        final Set<LapKey> lapsToHide = new HashSet<>();
+    private FilteringResult filterLaps(List<DataRecord> records, Set<UUID> hiddenLaps, short filter) {
+        final Set<UUID> lapsToHide = new HashSet<>();
 
         int newlyHidden = 0;
         int alreadyHidden = 0;
@@ -60,14 +56,14 @@ public final class SlowPaceLapsFilter extends LapsFilter {
                 final PaceLap paceLap = (PaceLap) lap;
 
                 if (compare(paceLap.getLapTime(), limit) > 0) {
-                    final LapKey lapKey = new LapKey(record.name(), lap.getLapNumber());
-                    final boolean hidden = hiddenLaps.contains(lapKey);
+                    final UUID id = lap.getId();
+                    final boolean hidden = hiddenLaps.contains(id);
 
                     if (hidden) {
                         alreadyHidden++;
                     } else {
                         newlyHidden++;
-                        lapsToHide.add(lapKey);
+                        lapsToHide.add(id);
                     }
                 }
             }
@@ -83,8 +79,8 @@ public final class SlowPaceLapsFilter extends LapsFilter {
         );
     }
 
-    private FilteringResult filterLapsAndSectors(List<DataRecord> records, Set<LapKey> hiddenLaps, short filter) {
-        final Set<LapKey> lapsToHide = new HashSet<>();
+    private FilteringResult filterLapsAndSectors(List<DataRecord> records, Set<UUID> hiddenLaps, short filter) {
+        final Set<UUID> lapsToHide = new HashSet<>();
 
         int newlyHidden = 0;
         int alreadyHidden = 0;
@@ -106,14 +102,14 @@ public final class SlowPaceLapsFilter extends LapsFilter {
                         compare(paceLap.getSector2(), s2Limit) > 0 ||
                         compare(paceLap.getSector3(), s3Limit) > 0
                 ) {
-                    final LapKey lapKey = new LapKey(record.name(), lap.getLapNumber());
-                    final boolean hidden = hiddenLaps.contains(lapKey);
+                    final UUID id = lap.getId();
+                    final boolean hidden = hiddenLaps.contains(id);
 
                     if (hidden) {
                         alreadyHidden++;
                     } else {
                         newlyHidden++;
-                        lapsToHide.add(lapKey);
+                        lapsToHide.add(id);
                     }
                 }
             }

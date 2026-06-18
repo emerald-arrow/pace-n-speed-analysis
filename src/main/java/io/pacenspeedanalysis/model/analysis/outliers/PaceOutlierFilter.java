@@ -1,6 +1,5 @@
 package io.pacenspeedanalysis.model.analysis.outliers;
 
-import io.pacenspeedanalysis.model.analysis.LapKey;
 import io.pacenspeedanalysis.model.analysis.Quartiles;
 import io.pacenspeedanalysis.model.data.DataRecord;
 import io.pacenspeedanalysis.model.data.PaceDataRecord;
@@ -8,16 +7,13 @@ import io.pacenspeedanalysis.model.lap.PaceLap;
 import io.pacenspeedanalysis.util.duration.DurationUtils;
 
 import java.time.Duration;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class PaceOutlierFilter implements OutlierFilterStrategy {
 
     @Override
-    public Set<LapKey> filter(List<DataRecord> data) {
-        final Set<LapKey> keys = new HashSet<>();
+    public Set<UUID> filter(List<DataRecord> data) {
+        final Set<UUID> laps = new HashSet<>();
 
         for (DataRecord record : data) {
             final PaceDataRecord paceRecord = (PaceDataRecord) record;
@@ -35,7 +31,7 @@ public final class PaceOutlierFilter implements OutlierFilterStrategy {
 
             if (quartiles == null) {
                 for (PaceLap lap : paceRecord.laps()) {
-                    keys.add(new LapKey(record.name(), lap.getLapNumber()));
+                    laps.add(lap.getId());
                 }
 
                 continue;
@@ -49,11 +45,11 @@ public final class PaceOutlierFilter implements OutlierFilterStrategy {
                 );
 
                 if (!isNotOutlier) {
-                    keys.add(new LapKey(record.name(), lap.getLapNumber()));
+                    laps.add(lap.getId());
                 }
             }
         }
 
-        return Collections.unmodifiableSet(keys);
+        return Collections.unmodifiableSet(laps);
     }
 }

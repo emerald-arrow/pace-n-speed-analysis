@@ -6,6 +6,7 @@ import io.pacenspeedanalysis.util.numeric.BigDecimalUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 public record SpeedAnalysis(
         String name,
@@ -16,9 +17,9 @@ public record SpeedAnalysis(
         BigDecimal variance,
         BigDecimal standardDeviation
 ) implements Analysis<BigDecimal> {
-    public SpeedAnalysis(SpeedDataRecord record, List<Short> hiddenLaps) {
+    public SpeedAnalysis(SpeedDataRecord record, List<UUID> hiddenLaps) {
         final List<BigDecimal> validLaps = record.laps().stream()
-                                                        .filter(l -> !hiddenLaps.contains(l.getLapNumber()))
+                                                        .filter(l -> !hiddenLaps.contains(l.getId()))
                                                         .map(SpeedLap::getTopSpeed)
                                                         .toList();
 
