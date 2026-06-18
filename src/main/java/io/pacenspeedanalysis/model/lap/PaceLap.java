@@ -15,7 +15,8 @@ public final class PaceLap extends Lap {
                 builder.lapNumber,
                 builder.wentThroughPitLane,
                 builder.flagAtFinishLine,
-                builder.elapsed
+                builder.elapsed,
+                builder.id
         );
 
         this.lapTime = builder.lapTime;
