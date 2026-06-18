@@ -31,7 +31,7 @@ mvn clean package
 ```
 And then run it by typing:
 ```
-java -jar target/pace-n-speed-analysis-1.0.jar
+java -jar target/pace-n-speed-analysis-1.1.jar
 ```
 
 # Usage

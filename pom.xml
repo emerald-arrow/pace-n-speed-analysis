@@ -4,7 +4,7 @@
     <!-- Project from https://start.vaadin.com/f2713cad-94aa-4885-ac1e-920b5f3c48cf -->
     <groupId>io.pacenspeedanalysis</groupId>
     <artifactId>pace-n-speed-analysis</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
     
     <properties>
