@@ -3,6 +3,7 @@ package io.pacenspeedanalysis.model.lap;
 import io.pacenspeedanalysis.model.EFlag;
 
 import java.time.Duration;
+import java.util.UUID;
 
 public abstract class LapBuilder<SELF extends LapBuilder<SELF, PRODUCT>, PRODUCT> {
 
@@ -10,6 +11,7 @@ public abstract class LapBuilder<SELF extends LapBuilder<SELF, PRODUCT>, PRODUCT
     protected Boolean wentThroughPitLane;
     protected EFlag flagAtFinishLine;
     protected Duration elapsed;
+    protected UUID id;
 
     @SuppressWarnings("unchecked")
     protected SELF self() {
@@ -38,11 +40,18 @@ public abstract class LapBuilder<SELF extends LapBuilder<SELF, PRODUCT>, PRODUCT
         return self();
     }
 
+    public SELF withId(UUID id) {
+        requireNotNull(id, "id");
+        this.id = id;
+        return self();
+    }
+
     protected void validate() {
         if (lapNumber == null ||
             wentThroughPitLane == null ||
             flagAtFinishLine == null ||
-            elapsed == null
+            elapsed == null ||
+            id == null
         ) {
             throw new IllegalStateException("All values must be set");
         }

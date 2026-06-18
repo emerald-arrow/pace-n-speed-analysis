@@ -29,13 +29,14 @@ public class DataRecordGenerationService {
                                                         .withWentThroughPitLane(row.getWentThroughPitLane())
                                                         .withFlagAtFinishLine(row.getFlagAtFinishLine())
                                                         .withElapsed(row.getElapsed())
+                                                        .withId(row.getId())
                                                         .withLapTime(row.getLapTime())
                                                         .withSector1(row.getSectorOne())
                                                         .withSector2(row.getSectorTwo())
                                                         .withSector3(row.getSectorThree())
                                                         .build();
 
-            dataLaps.computeIfAbsent(key, k -> new ArrayList<>()).add(lap);
+            dataLaps.computeIfAbsent(key, _ -> new ArrayList<>()).add(lap);
         }
 
         return dataLaps.entrySet()
@@ -62,10 +63,11 @@ public class DataRecordGenerationService {
                                                         .withWentThroughPitLane(row.getWentThroughPitLane())
                                                         .withFlagAtFinishLine(row.getFlagAtFinishLine())
                                                         .withElapsed(row.getElapsed())
+                                                        .withId(row.getId())
                                                         .withTopSpeed(row.getTopSpeed())
                                                         .build();
 
-            dataLaps.computeIfAbsent(key, k -> new ArrayList<>()).add(lap);
+            dataLaps.computeIfAbsent(key, _ -> new ArrayList<>()).add(lap);
         }
 
         return dataLaps.entrySet()
