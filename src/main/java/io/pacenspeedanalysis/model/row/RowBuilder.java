@@ -6,6 +6,7 @@ import io.pacenspeedanalysis.util.numeric.ShortUtils;
 import io.pacenspeedanalysis.util.string.StringUtils;
 
 import java.time.Duration;
+import java.util.UUID;
 
 public abstract class RowBuilder<T, SELF extends RowBuilder<T, SELF, PRODUCT>, PRODUCT> {
 
@@ -20,6 +21,7 @@ public abstract class RowBuilder<T, SELF extends RowBuilder<T, SELF, PRODUCT>, P
     protected String manufacturer;
     protected EFlag flagAtFinishLine;
     protected Duration elapsed;
+    protected UUID id;
 
     @SuppressWarnings("unchecked")
     protected SELF self() {
@@ -80,6 +82,12 @@ public abstract class RowBuilder<T, SELF extends RowBuilder<T, SELF, PRODUCT>, P
         return self();
     }
 
+    public SELF withId(UUID id) {
+        requireNotNull(id, "id");
+        this.id = id;
+        return self();
+    }
+
     protected void validate() {
         if (carNumber == null ||
             lapNumber == null ||
@@ -89,7 +97,8 @@ public abstract class RowBuilder<T, SELF extends RowBuilder<T, SELF, PRODUCT>, P
             team == null ||
             manufacturer == null ||
             flagAtFinishLine == null ||
-            elapsed == null
+            elapsed == null ||
+            id == null
         ) {
             throw new IllegalStateException("All values must be set");
         }

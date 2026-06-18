@@ -22,7 +22,8 @@ public final class PaceRow extends Row {
                 builder.team,
                 builder.manufacturer,
                 builder.flagAtFinishLine,
-                builder.elapsed
+                builder.elapsed,
+                builder.id
         );
         this.lapTime = builder.lapTime;
         this.sectorOne = builder.sector1;
