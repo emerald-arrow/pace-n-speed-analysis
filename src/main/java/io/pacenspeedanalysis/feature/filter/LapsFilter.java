@@ -1,14 +1,14 @@
 package io.pacenspeedanalysis.feature.filter;
 
-import io.pacenspeedanalysis.model.analysis.LapKey;
 import io.pacenspeedanalysis.model.data.DataRecord;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public abstract class LapsFilter {
 
-    public abstract FilteringResult apply(List<DataRecord> records, Set<LapKey> hiddenLaps);
+    public abstract FilteringResult apply(List<DataRecord> records, Set<UUID> hiddenLaps);
 
     protected EFilteringType obtainEFilteringType(int alreadyHidden, int newlyHidden) {
         final int total = alreadyHidden + newlyHidden;

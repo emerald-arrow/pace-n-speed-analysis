@@ -10,7 +10,6 @@ import io.pacenspeedanalysis.util.duration.DurationUtils;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public record AnalysisContext(
@@ -21,25 +20,16 @@ public record AnalysisContext(
     private static final Duration NEUTRAL_DURATION = Duration.ofHours(9999);
     private static final BigDecimal NEUTRAL_SPEED = BigDecimal.ZERO;
 
-    public static AnalysisContext of(List<DataRecord> records, Set<LapKey> hiddenLaps) {
+    public static AnalysisContext of(List<DataRecord> records, Set<UUID> hiddenLaps) {
         final Map<String, Duration> fastestLaps = new HashMap<>();
         final Map<String, BestSectors> fastestSectorTimes = new HashMap<>();
         final Map<String, BigDecimal> maxSpeeds = new HashMap<>();
 
-        final Map<String, Set<Short>> groupedExcluded = hiddenLaps.stream().collect(
-                Collectors.groupingBy(
-                        LapKey::entityName,
-                        Collectors.mapping(LapKey::lapNumber, Collectors.toSet())
-                )
-        );
-
         for (DataRecord record : records) {
-            final Set<Short> excludedLaps = groupedExcluded.getOrDefault(record.name(), Set.of());
-
             switch (record) {
                 case PaceDataRecord p -> {
                     final Duration fastestLap = p.laps().stream()
-                                                        .filter(l -> !excludedLaps.contains(l.getLapNumber()))
+                                                        .filter(l -> !hiddenLaps.contains(l.getId()))
                                                         .map(PaceLap::getLapTime)
                                                         .min(Duration::compareTo)
                                                         .orElse(NEUTRAL_DURATION);
@@ -70,7 +60,7 @@ public record AnalysisContext(
                 }
                 case SpeedDataRecord s -> {
                     final BigDecimal maxSpeed = s.laps().stream()
-                                                        .filter(l -> !excludedLaps.contains(l.getLapNumber()))
+                                                        .filter(l -> !hiddenLaps.contains(l.getId()))
                                                         .map(SpeedLap::getTopSpeed)
                                                         .max(BigDecimal::compareTo)
                                                         .orElse(NEUTRAL_SPEED);

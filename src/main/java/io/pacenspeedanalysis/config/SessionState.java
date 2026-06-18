@@ -4,7 +4,6 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 import io.pacenspeedanalysis.model.*;
 import io.pacenspeedanalysis.model.analysis.AnalysisContext;
-import io.pacenspeedanalysis.model.analysis.LapKey;
 import io.pacenspeedanalysis.model.analysis.outliers.OutlierFilterFactory;
 import io.pacenspeedanalysis.model.data.DataRecord;
 
@@ -22,8 +21,8 @@ public final class SessionState {
     private EAnalysisType analysisType;
     private EAggregationType aggregationType;
     private AnalysisContext analysisContext;
-    private Set<LapKey> hiddenLaps;
-    private Set<LapKey> outlierLaps;
+    private Set<UUID> hiddenLaps;
+    private Set<UUID> outlierLaps;
 
     public SessionState() {
         this.uploadedFile = null;
@@ -105,15 +104,18 @@ public final class SessionState {
         return analysisContext;
     }
 
-    public Set<LapKey> getAllHiddenLaps() {
+    public Set<UUID> getAllHiddenLaps() {
         return Stream.of(hiddenLaps, outlierLaps)
                         .flatMap(Collection::stream)
                         .collect(Collectors.toUnmodifiableSet());
     }
 
-    public void addHiddenLaps(Set<LapKey> lapsToHide) {
+    public void addHiddenLaps(Set<UUID> lapsToHide) {
         if (lapsToHide == null) {
             throw new IllegalArgumentException("lapsToHide must not be null");
+        }
+        if (lapsToHide.stream().anyMatch(Objects::isNull)) {
+            throw new IllegalArgumentException("lapsToHide must not contain null values");
         }
 
         this.hiddenLaps.addAll(lapsToHide);

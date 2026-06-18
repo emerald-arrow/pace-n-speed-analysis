@@ -1,6 +1,5 @@
 package io.pacenspeedanalysis.model.analysis.outliers;
 
-import io.pacenspeedanalysis.model.analysis.LapKey;
 import io.pacenspeedanalysis.model.analysis.Quartiles;
 import io.pacenspeedanalysis.model.data.DataRecord;
 import io.pacenspeedanalysis.model.data.SpeedDataRecord;
@@ -13,8 +12,8 @@ import java.util.*;
 public final class SpeedOutlierFilter implements OutlierFilterStrategy {
 
     @Override
-    public Set<LapKey> filter(List<DataRecord> data) {
-        final Set<LapKey> keys = new HashSet<>();
+    public Set<UUID> filter(List<DataRecord> data) {
+        final Set<UUID> laps = new HashSet<>();
 
         for (DataRecord record : data) {
             final SpeedDataRecord speedRecord = (SpeedDataRecord) record;
@@ -23,7 +22,7 @@ public final class SpeedOutlierFilter implements OutlierFilterStrategy {
 
             for (SpeedLap lap : speedRecord.laps()) {
                 if (lap.getTopSpeed().compareTo(BigDecimal.ZERO) == 0) {
-                    keys.add(new LapKey(record.name(), lap.getLapNumber()));
+                    laps.add(lap.getId());
                     continue;
                 }
 
@@ -40,7 +39,7 @@ public final class SpeedOutlierFilter implements OutlierFilterStrategy {
 
             if (quartiles == null) {
                 for (SpeedLap lap : speedRecord.laps()) {
-                    keys.add(new LapKey(record.name(), lap.getLapNumber()));
+                    laps.add(lap.getId());
                 }
 
                 continue;
@@ -49,11 +48,11 @@ public final class SpeedOutlierFilter implements OutlierFilterStrategy {
             for (SpeedLap lap : speedRecord.laps()) {
                 if (lap.getTopSpeed().compareTo(quartiles.lowerFence()) < 0 ||
                     lap.getTopSpeed().compareTo(quartiles.upperFence()) > 0) {
-                    keys.add(new LapKey(record.name(), lap.getLapNumber()));
+                    laps.add(lap.getId());
                 }
             }
         }
 
-        return Collections.unmodifiableSet(keys);
+        return Collections.unmodifiableSet(laps);
     }
 }
